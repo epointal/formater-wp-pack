@@ -11,7 +11,10 @@ if (! defined ( 'ABSPATH' ))
 class Fm_svg_manager {
     // svg count in post/page
     public static $_count_svg = 0;
-    public function __construct() {
+    public static $_plugin_dir = '';
+    public function __construct( ) {
+        self::$_plugin_dir = plugin_dir_path (__DIR__);
+        
         if (is_admin ()) {
             // Add svg and xml as a supported upload type to Media Gallery
             add_filter ( 'upload_mimes', array (
@@ -28,10 +31,10 @@ class Fm_svg_manager {
             // Embed svg shortcode instead of link
             add_filter ( 'media_send_to_editor', array (
                     &$this,
-                    'svg_media_send_to_editor',
+                    'svg_media_send_to_editor'),
                     20,
                     3 
-            ) );
+            ) ;
         } else {
             // include content for svg file
             add_shortcode ( "formater-svg", array( &$this, "include_file_svg") );
@@ -81,6 +84,7 @@ class Fm_svg_manager {
      * @return string
      */
     public function svg_media_send_to_editor($html, $id, $attachment) {
+        
         if (isset ( $attachment ['url'] ) && preg_match ( "/\.svg$/i", $attachment ['url'] )) {
             $class = "";
             if (isset ( $attachment ['align'] )) {
@@ -112,9 +116,9 @@ class Fm_svg_manager {
      */
     private static  function svg_script() {
         if (WP_DEBUG) {
-            $script = file_get_contents ( 'plugin_dur' . '/js/manage-svg.js' );
+            $script = file_get_contents ( self::$_plugin_dir . 'js/manage-svg.js' );
         } else {
-            $script = file_get_contents ( 'plugin_dur'. '/dist/manage-svg-min.js' );
+            $script = file_get_contents ( self::$_plugin_dir. 'dist/manage-svg-min.js' );
         }
         return '<script type="text/javascript">' . $script . '</script>';
     }
@@ -126,9 +130,9 @@ class Fm_svg_manager {
      */
     private static function svg_style() {
         if (WP_DEBUG) {
-            $style = file_get_contents ( 'plugin_dur'. '/css/manage-svg.css' );
+            $style = file_get_contents ( self::$_plugin_dir. 'css/manage-svg.css' );
         } else {
-            $style = file_get_contents ( 'plugin_dur'. '/dist/manage-svg.css' );
+            $style = file_get_contents ( self::$_plugin_dir. 'dist/manage-svg.css' );
         }
         return '<style>' . $style . '</style>';
     }
@@ -148,7 +152,7 @@ class Fm_svg_manager {
         $url = $attrs ["src"];
         // load by path instead url
         $path = realpath ( str_replace ( $upload_url, $upload_dir, $url ) );
-        return $path;
+  
         // $svg = file_get_contents($url);
         if (! file_exists ( $path )) {
             return "";
@@ -167,8 +171,8 @@ class Fm_svg_manager {
                  * but it's heavy to load a script file for only one little function
                  * see before
                  */
-              //  $content .= self::svg_style ();
-              //  $content .= self::svg_script ();
+                $content .= self::svg_style ();
+                $content .= self::svg_script ();
             }
             self::$_count_svg ++;
             if (isset ( $attrs ['class'] ) && ! isset ( $attrs ['hide_button'] )) {
