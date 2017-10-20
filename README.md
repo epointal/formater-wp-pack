@@ -1,8 +1,8 @@
 # formater-wp-pack
-Tools for child theme [Formater wp Child Theme for Aeris](https://github.com/epointal/formater-wp-child-theme-for-aeris)
+Pack for child theme [Formater wp Child Theme for Aeris](https://github.com/epointal/formater-wp-child-theme-for-aeris)
 
 
 
-## functionnalities added in this child theme
+## functionnalities 
 - [x] manage svg file
-- [x] manage pdf file with embed view
+- [x] manage pdf file with embed view (use webcomponent [formater-pdf-viewer-vjs](https://github.com/epointal/formater-pdf-viewer-vjs))
